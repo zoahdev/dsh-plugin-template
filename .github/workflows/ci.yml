@@ -6,6 +6,14 @@ on:
   pull_request:
 
 jobs:
+  doctor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: zoahdev/dsh-plugin-doctor-action@v1
+        with:
+          path: .
+
   test-and-load:
     runs-on: ubuntu-latest
     steps:
