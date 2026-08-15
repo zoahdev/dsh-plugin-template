@@ -28,5 +28,22 @@ jobs:
         run: pnpm pack
       - name: Packaged integration + real tool invocation
         run: node scripts/integration-test.mjs ./dsh-plugin-template-0.1.0.tgz
+
+  dsh-smoke:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build
+        run: pnpm run build
+      - name: Pack
+        run: pnpm pack
       - name: Fresh DSH profile install + boot smoke
         run: bash scripts/dsh-smoke.sh ./dsh-plugin-template-0.1.0.tgz

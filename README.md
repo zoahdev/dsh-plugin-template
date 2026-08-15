@@ -61,7 +61,7 @@ Then ask your agent: "Use the hello tool to greet Ada."
 
 ## CI
 
-`.github/workflows/ci.yml` runs, in order:
+`.github/workflows/ci.yml` runs, in order (job `test-and-load` on ubuntu):
 
 1. clean checkout
 2. `pnpm install --frozen-lockfile`
@@ -70,7 +70,9 @@ Then ask your agent: "Use the hello tool to greet Ada."
 5. `pnpm test` (unit)
 6. `pnpm pack`
 7. **packaged integration + real tool invocation** — `scripts/integration-test.mjs` installs the actual tarball into a fresh project, loads the installed bundle, registers `hello` through the real `apply()` / `ctx.tools.register` path, executes the real handler, and asserts `Hello, Ada!`
-8. **fresh DSH profile smoke** — `scripts/dsh-smoke.sh` installs the tarball into a brand-new `DSH_HOME`, verifies the plugin row in `--dump-config`, boots `dsh web` with a 30s bounded retry, and cleans up the background process
+8. job `dsh-smoke` on **windows-latest**: `scripts/dsh-smoke.sh` installs the tarball into a brand-new `DSH_HOME`, verifies the plugin row in `--dump-config`, boots `dsh web` with a 30s bounded retry, and cleans up the background process
+
+> Upstream note: `dsh web` (0.1.0-rc.6 npm CLI) currently fails to boot on GitHub Actions ubuntu-latest because the `@deepseek-ai/dsh-subprocess-local` native `pty.node` linux-x64 prebuild is missing from the published package. That is why the boot smoke runs on Windows (where the prebuild ships). Tracked upstream in [discussion #1686](https://github.com/deepseek-ai/deepseek-harness/discussions/1686) — this is an upstream packaging issue, not a template issue.
 
 ## Publishing checklist
 
@@ -206,7 +208,9 @@ dsh web --port 4099
 5. `pnpm test`（单元）
 6. `pnpm pack`
 7. **打包产物集成 + 真实工具调用**——`scripts/integration-test.mjs` 把实际 tarball 装进全新项目，加载已安装产物，通过真实的 `apply()` / `ctx.tools.register` 注册 `hello`，执行真实 handler，断言 `Hello, Ada!`
-8. **全新 DSH profile 冒烟**——`scripts/dsh-smoke.sh` 在全新 `DSH_HOME` 安装 tarball，校验 `--dump-config` 里的插件行，30 秒限时重试启动 `dsh web`，并清理后台进程
+8. `dsh-smoke` job（**windows-latest**）：`scripts/dsh-smoke.sh` 在全新 `DSH_HOME` 安装 tarball，校验 `--dump-config` 里的插件行，30 秒限时重试启动 `dsh web`，并清理后台进程
+
+> 上游说明：`dsh web`（0.1.0-rc.6 npm CLI）在 GitHub Actions ubuntu-latest 上无法启动，因为发布包里缺少 `@deepseek-ai/dsh-subprocess-local` 的 `pty.node` linux-x64 预编译模块。所以启动冒烟放在 Windows（预编译随包提供）上跑。这是上游打包问题，不是模板问题。
 
 ## 发布清单
 
