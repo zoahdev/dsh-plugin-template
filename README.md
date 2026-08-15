@@ -59,6 +59,18 @@ Then ask your agent: "Use the hello tool to greet Ada."
 - `README.md`: title, links, author
 - Add the `dsh-plugin` topic to your GitHub repo
 
+## Check it with dsh-plugin-doctor
+
+After renaming, run the community health checker locally (clone once, reuse everywhere):
+
+```sh
+git clone https://github.com/zoahdev/dsh-plugin-doctor.git
+cd dsh-plugin-doctor && pnpm install && pnpm build
+node lib/bin.js --full <your-plugin-directory>
+```
+
+It verifies the manifest, patch validity, entry points, build, pack, and a fresh-DSH-profile install — the same checks this template's CI runs. See [zoahdev/dsh-plugin-doctor](https://github.com/zoahdev/dsh-plugin-doctor).
+
 ## CI
 
 `.github/workflows/ci.yml` runs, in order (job `test-and-load` on ubuntu):
@@ -196,6 +208,18 @@ dsh web --port 4099
 - `src/index.ts`：`export const name`、工具名与描述
 - `README.md`：标题、链接、作者
 - GitHub 仓库加 `dsh-plugin` 话题
+
+## 用 dsh-plugin-doctor 体检
+
+改完名后，用社区健康检查器本地验证（克隆一次，随处复用）：
+
+```sh
+git clone https://github.com/zoahdev/dsh-plugin-doctor.git
+cd dsh-plugin-doctor && pnpm install && pnpm build
+node lib/bin.js --full <你的插件目录>
+```
+
+它验证 manifest、patch 合法性、入口、build、pack 和全新 DSH profile 安装——和本模板 CI 跑的是同一套检查。见 [zoahdev/dsh-plugin-doctor](https://github.com/zoahdev/dsh-plugin-doctor)。
 
 ## CI
 
