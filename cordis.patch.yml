@@ -1,0 +1,5 @@
+- insert:
+    - id: template-hello
+      name: dsh-plugin-template
+      config:
+        greeting: 'Hello'
