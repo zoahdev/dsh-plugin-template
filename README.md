@@ -71,6 +71,16 @@ node lib/bin.js --full <your-plugin-directory>
 
 It verifies the manifest, patch validity, entry points, build, pack, and a fresh-DSH-profile install — the same checks this template's CI runs. See [zoahdev/dsh-plugin-doctor](https://github.com/zoahdev/dsh-plugin-doctor).
 
+Or use the turnkey GitHub Action (no clone, no build):
+
+```yaml
+- uses: zoahdev/dsh-plugin-doctor-action@v1
+  with:
+    path: .
+```
+
+This template's CI already runs it in the `doctor` job.
+
 ## CI
 
 `.github/workflows/ci.yml` runs, in order (job `test-and-load` on ubuntu):
