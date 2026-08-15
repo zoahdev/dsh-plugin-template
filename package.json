@@ -22,7 +22,9 @@
     "build": "tsc -p tsconfig.json",
     "prepare": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:integration": "node scripts/integration-test.mjs",
+    "test:dsh-smoke": "bash scripts/dsh-smoke.sh"
   },
   "keywords": [
     "deepseek-harness",

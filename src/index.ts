@@ -9,11 +9,46 @@
 import type { Context } from '@deepseek-ai/cordis'
 import Schema from '@deepseek-ai/schemastery'
 import { defineTool } from '@deepseek-ai/dsh-tools'
+import { createRequire } from 'node:module'
+import { satisfiesCaret } from './version.js'
 
 export const name = 'dsh-plugin-template'
 
 /** Services required by this plugin. */
 export const inject = ['tools']
+
+/** Peer range this template is tested against and guards at runtime. */
+export const TESTED_PEER_RANGE = '^0.1.0-rc.6'
+
+const require = createRequire(import.meta.url)
+
+/** Resolve the dsh-tools version the plugin is actually linked against. */
+export function resolvedDshToolsVersion(): string {
+  try {
+    const pkg = require('@deepseek-ai/dsh-tools/package.json') as { version?: string }
+    return pkg.version ?? 'unknown'
+  } catch {
+    return 'unresolved'
+  }
+}
+
+/**
+ * Turn a silent peer mismatch into a loud, actionable load error.
+ *
+ * pnpm (default config) and some npm setups can link an older RC into the
+ * plugin's peer slot without failing the install (see README Troubleshooting).
+ * The plugin refuses to load in that case instead of failing at runtime later.
+ */
+export function assertPeerCompatible(): void {
+  const version = resolvedDshToolsVersion()
+  if (!satisfiesCaret(version, TESTED_PEER_RANGE)) {
+    throw new Error(
+      `dsh-plugin-template: resolved @deepseek-ai/dsh-tools ${version}, but this template is tested with `
+      + `${TESTED_PEER_RANGE}. Upgrade DeepSeek Harness to 0.1.0-rc.6 or later, then reinstall this plugin. `
+      + 'See the Troubleshooting section in the README.',
+    )
+  }
+}
 
 /** Plugin configuration supplied through cordis.yml. */
 export interface Config {
@@ -52,6 +87,7 @@ function delay(signal: AbortSignal, ms: number): Promise<void> {
  * @param config - validated plugin configuration.
  */
 export function apply(ctx: Context, config: Config): void {
+  assertPeerCompatible()
   ctx.tools.register(defineTool({
     name: 'hello',
     description:

@@ -10,31 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11
       - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
-      - run: pnpm test
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Build
+        run: pnpm run build
+      - name: Unit tests
+        run: pnpm test
       - name: Pack
         run: pnpm pack
-      - name: Install plugin into a fresh dsh profile
-        env:
-          DSH_HOME: ${{ runner.temp }}/dsh-home
-        run: |
-          pnpm dlx @deepseek-ai/dsh plugin --profile web add ./dsh-plugin-template-0.1.0.tgz
-          pnpm dlx @deepseek-ai/dsh --profile web --dump-config | grep -q template-hello
-      - name: Boot dsh web with the plugin loaded
-        env:
-          DSH_HOME: ${{ runner.temp }}/dsh-home
-        run: |
-          pnpm dlx @deepseek-ai/dsh web --port 4099 &
-          for i in $(seq 1 30); do
-            if curl -sf http://127.0.0.1:4099 >/dev/null; then exit 0; fi
-            sleep 1
-          done
-          exit 1
+      - name: Packaged integration + real tool invocation
+        run: node scripts/integration-test.mjs ./dsh-plugin-template-0.1.0.tgz
+      - name: Fresh DSH profile install + boot smoke
+        run: bash scripts/dsh-smoke.sh ./dsh-plugin-template-0.1.0.tgz
