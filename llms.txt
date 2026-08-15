@@ -1,0 +1,19 @@
+# dsh-plugin-template
+
+> Minimal, verified template for DeepSeek Harness plugins: bundle manifest, one tool, runtime peer guard, tests, and CI that really invokes the tool. Fork it and rename.
+
+## Key facts
+
+- Runtime guard: `assertPeerCompatible()` rejects silently-linked older `@deepseek-ai/dsh-tools` copies (discussion #1697)
+- Verification: unit tests; packaged integration (pack → fresh host → register → real handler call → assert); CI boot smoke on Windows
+- Includes `cordis.patch.yml`, `dsh.bundle`, `files` allowlist, `prepare` script
+
+## Key files
+
+- src/index.ts — plugin entry + hello tool
+- src/version.ts — peer-version guard
+- scripts/integration-test.mjs — packaged real-invocation smoke
+
+## Community
+
+- RFC #1629: https://github.com/deepseek-ai/deepseek-harness/discussions/1629
