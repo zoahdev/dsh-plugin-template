@@ -1,5 +1,8 @@
 # dsh-plugin-template
 
+[![CI](https://github.com/zoahdev/dsh-plugin-template/actions/workflows/ci.yml/badge.svg)](https://github.com/zoahdev/dsh-plugin-template/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 [English](#english) · [中文](#中文)
 
 A minimal, **verified** community starting point for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugins. Fork it, rename it, and ship your own plugin with a CI that proves the plugin is actually callable — not just loadable.
